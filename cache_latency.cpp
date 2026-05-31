@@ -1,4 +1,5 @@
 // g++ -O3 -std=c++20 -march=native cache_latency.cpp -o cache_latency
+// ./cache_latency > latency_results.csv
 
 #include <iostream>
 #include <chrono>
@@ -19,11 +20,7 @@ int main() {
 
     std::mt19937_64 rng(12345);
 
-    std::cout << std::left
-              << std::setw(18) << "Size (KiB)"
-              << std::setw(18) << "Accesses"
-              << std::setw(18) << "Latency (ns)"
-              << '\n';
+    std::cout << "size_kib,accesses,latency_ns\n";
 
     for (std::size_t bytes = min_size; bytes <= max_size; bytes *= 2) {
         const std::size_t count = bytes / sizeof(std::uint32_t);
@@ -66,9 +63,9 @@ int main() {
 
         const double ns_per_access = seconds * 1e9 / static_cast<double>(accesses);
 
-        std::cout << std::setw(18) << (bytes / 1024)
-                  << std::setw(18) << accesses
-                  << std::setw(18) << std::fixed <<std::setprecision(2)
+        std::cout << (bytes / 1024) << ','
+                  << accesses << ','
+                  << std::fixed << std::setprecision(2)
                   << ns_per_access << '\n';
     }
 }
