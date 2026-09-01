@@ -1,0 +1,20 @@
+# Build directories
+/build/
+cmake-build-*/
+
+# Compiled executables
+/rate_limiter
+/test_rate_limiter
+/cache_latency
+*.exe
+
+# C/C++ build artifacts
+*.o
+*.obj
+*.a
+*.so
+*.dylib
+*.dSYM/
+
+# macOS
+.DS_Store

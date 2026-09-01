@@ -1,76 +1,49 @@
 // rate_limiter.cpp
-#include <chrono>
-#include <unordered_map>
-#include <thread>
-#include <string>
-#include <cstddef>
-#include <vector>
+#include "rate_limiter.hpp"
 
-using Clock = std::chrono::steady_clock;
-using Duration = Clock::duration;
+#include <stdexcept>
 
-struct RateLimiterResp {
-    bool accepted;
-    std::size_t remaining;
-};
+RateLimiter::RateLimiter(std::size_t capacity, Duration period)
+    : ring_(capacity), period_(period) {
+    if (period < Duration::zero()) {
+        throw std::invalid_argument("period must be positive.");
+    }
+}
 
-struct RateLimiterEntry {
-    std::string token;
-    Clock::time_point timestamp;
-};
+void RateLimiter::expireOldCalls(Clock::time_point now) {
+    while (count_ > 0 && now - ring_[head_].timestamp >= period_) {
+        head_ = (head_ + 1) % ring_.size();
+        --count_;
+    }
+}
 
-class RateLimiter {
-private:
-    std::vector<RateLimiterEntry> ring_;
-    Duration period_;
-    std::size_t head_ = 0;
-    std::size_t count_ = 0;
-
-    void expireOldCalls(Clock::time_point now) {
-        while (count_ > 0 && now - ring_[head_].timestamp >= period_) {
-            head_ = (head_ + 1) % ring_.size();
-            --count_;
-        }
+bool RateLimiter::canCallAt(Clock::time_point now) {
+    if (ring_.empty()) {
+        return false;
     }
 
-    bool canCallAt(Clock::time_point now) {
-        if (ring_.empty()) {
-            return false;
-        }
+    expireOldCalls(now);
+    return count_ < ring_.size();
+}
 
-        expireOldCalls(now);
-        return count_ < ring_.size();
+bool RateLimiter::canCall() {
+    return canCallAt(Clock::now());
+}
+
+RateLimiterResp RateLimiter::call(const std::string& token) {
+    Clock::time_point now = Clock::now();
+
+    if (!canCall()) {
+        return { false, 0 };
     }
 
-public:
-    RateLimiter(std::size_t window_size, Duration period)
-        : ring_(window_size),period_(period){
-            if (period < Duration::zero()) {
-                throw std::invalid_argument(
-                    "period must be positive"
-                );
-            }
-        }
+    const std::size_t tail = (head_ + count_) % ring_.size();
+    ring_[tail] = { token, now };
+    ++count_;
 
-    bool canCall() {
-        return canCallAt(Clock::now());
-    }
+    return { true, ring_.size() - count_ };
+}
 
-    RateLimiterResp call(const std::string& token) {
-        Clock::time_point now = Clock::now();
-
-        if (!canCall()) {
-            return { false, 0 };
-        }
-
-        const std::size_t tail = (head_ + count_) % ring_.size();
-        ring_[tail] = { token, now };
-        ++count_;
-
-        return { true, ring_.size() - count_ };
-    }
-};
-
-int main() {
-    return 0;
+std::size_t RateLimiter::getCount() {
+    return count_;
 }
