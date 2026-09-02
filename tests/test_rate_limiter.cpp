@@ -1,3 +1,4 @@
+// g++ -O3 -std=c++20 -Wall -Wextra -Wpedantic -pthread -Iinclude src/rate_limiter.cpp tests/test_rate_limiter.cpp -o test_rate_limiter
 // test_rate_limiter.cpp
 #include "rate_limiter.hpp"
 
@@ -32,7 +33,7 @@ void test_1_global_limiter() {
     assert(fourth.accepted);
     assert(fourth.remaining == 1);
 
-    std::cout << "Test 1 passed.\n";
+    std::cout << ">> Test 1 passed.\n";
 }
 
 int main() {
