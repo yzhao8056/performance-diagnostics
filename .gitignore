@@ -6,6 +6,8 @@ cmake-build-*/
 /rate_limiter
 /test_rate_limiter
 /cache_latency
+/batch_set
+/test_batch_set
 *.exe
 
 # C/C++ build artifacts
@@ -18,3 +20,4 @@ cmake-build-*/
 
 # macOS
 .DS_Store
+.vscode/
