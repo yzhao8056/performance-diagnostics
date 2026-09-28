@@ -55,9 +55,7 @@ int main() {
         const auto end = Clock::now();
 
         // prevent compiler optimizations
-        if (idx == static_cast<uint32_t>(-1)) {
-            std::cerr << "Erhmm\n";
-        }
+        asm volatile("": "+r"(idx));
 
         const double seconds = std::chrono::duration<double>(end - start).count();
 
