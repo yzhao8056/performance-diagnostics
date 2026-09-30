@@ -21,5 +21,4 @@ plt.title("Random pointer-chasing memory latency")
 plt.grid(True)
 
 plt.tight_layout()
-plt.show()
-        
+plt.savefig("cache_latency.png") 
