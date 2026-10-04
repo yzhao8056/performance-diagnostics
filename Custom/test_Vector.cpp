@@ -2,6 +2,8 @@
 #include "Vector.hpp"
 #include <print>
 
+using namespace Custom;
+
 void test_vector_default_constructor() {
     Vector<int> v;
 
@@ -22,7 +24,7 @@ void test_vector_indexing() {
     assert(!v.empty());
     assert(v.size() == 5);
     assert(v[0] == 42);
-    
+
     v[0] = 52;
 
     assert(v[0] == 52);
@@ -52,7 +54,7 @@ void test_vector_copy_assignment() {
     assert(b[0] == 42);
 
     a[0] = 30;
-    
+
     assert(b[0] == 42);
 }
 

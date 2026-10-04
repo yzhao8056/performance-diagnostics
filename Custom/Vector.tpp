@@ -1,5 +1,7 @@
 // Vector.tpp
 
+namespace Custom {
+
 template <typename T>
 Vector<T>::Vector(std::size_t count) {
     if (count == 0) {
@@ -386,4 +388,6 @@ void Vector<T>::pop_back() {
 
     --end_;
     std::destroy_at(end_);
+}
+
 }

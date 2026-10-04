@@ -9,6 +9,8 @@
 #include <print>
 #include <utility>
 
+namespace Custom {
+
 template <typename T>
 class Vector {
 public:
@@ -47,5 +49,8 @@ private:
     T* end_ = nullptr;
     T* capacity_end_ = nullptr;
 };
+
+}
+
 
 #include "Vector.tpp"
