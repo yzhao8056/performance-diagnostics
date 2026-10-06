@@ -4,7 +4,7 @@
 using namespace Custom;
 
 void test_unique_ptr_make() {
-    Unique_ptr<int> up = make_unique<int>();
+    UniquePtr<int> up = make_unique<int>();
 }
 
 int main() {
